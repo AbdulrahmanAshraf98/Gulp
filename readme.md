@@ -9,5 +9,7 @@
         -[2]-src  used to get file and modify 
         -[3]-dest used to put output 
         -[4]-watch used to watch files and modify
-    
+
+        Function src,dest can take Array as argument
+        
 ## 
