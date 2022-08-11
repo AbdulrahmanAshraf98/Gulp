@@ -1,0 +1,1 @@
+document.getElementById("one").innerHTML="Text One From Js",document.getElementById("two").innerHTML="Text two From Js";

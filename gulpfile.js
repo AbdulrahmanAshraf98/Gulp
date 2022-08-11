@@ -13,7 +13,8 @@ const concat = require("gulp-concat");
 const autoprefixer = require("gulp-autoprefixer");
 const pug = require("gulp-pug");
 const livereload = require("gulp-livereload");
-var sourcemaps = require("gulp-sourcemaps");
+const sourcemaps = require("gulp-sourcemaps");
+const uglify = require("gulp-uglify");
 
 //create a new  Task  using task function
 //task takes two parameters  name task ,  callback function =>task
@@ -140,8 +141,8 @@ gulp.task("compile-all-sass", async () => {
 			),
 		)
 		.pipe(concat("main.css"))
-		.pipe(livereload())
-		.pipe(gulp.dest("dist/css/"));
+		.pipe(gulp.dest("dist/css/"))
+		.pipe(livereload());
 });
 
 /*
@@ -150,11 +151,11 @@ Task 8  Compile Pug  files to Html
 ------------------------------------------------------------------------
  */
 gulp.task("compile-pug-file", async () => {
-	gulp
+	return gulp
 		.src("./pug/index.pug")
 		.pipe(pug({ pretty: false }))
-		.pipe(livereload())
-		.pipe(gulp.dest("dist"));
+		.pipe(gulp.dest("dist"))
+		.pipe(livereload());
 });
 
 /*
@@ -194,9 +195,24 @@ gulp.task("compile-all-sass-with-source-map", async () => {
 		)
 		.pipe(concat("main.css"))
 		.pipe(sourcemaps.write("."))
-		.pipe(livereload())
-		.pipe(gulp.dest("dist/css/"));
+		.pipe(gulp.dest("dist/css/"))
+		.pipe(livereload());
 });
+/*
+------------------------------------------------------------------------
+Task 10  Concat All Js FilesAnd Minify
+------------------------------------------------------------------------
+ */
+
+gulp.task("MinifyJs", async () => {
+	return gulp
+		.src("js/*.js")
+		.pipe(concat("main.js"))
+		.pipe(uglify())
+		.pipe(gulp.dest("dist/js/"))
+		.pipe(livereload());
+});
+
 /*
 ------------------------------------------------------------------------
 Task 11  Watch ALl task 
@@ -210,4 +226,5 @@ gulp.task("watch", async () => {
 		gulp.series("compile-all-sass-with-source-map"),
 	);
 	gulp.watch("./pug/index.pug", gulp.series("compile-pug-file"));
+	gulp.watch("./js/*.js", gulp.series("MinifyJs"));
 });
