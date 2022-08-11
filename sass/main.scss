@@ -1,8 +1,10 @@
-@import 'header.scss';
-$color:red;
-$margin:5rem 2rem;
+@import './Component/header';
+$color:black;
+$margin:5rem 1rem;
 body{
     background-color: $color;
+    color: white;
     padding: 100px;
     margin: $margin;
+    border: 1rem solid salmon;
 }

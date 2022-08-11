@@ -12,6 +12,8 @@ const sass = gulpSass(require("sass"));
 const concat = require("gulp-concat");
 const autoprefixer = require("gulp-autoprefixer");
 const pug = require("gulp-pug");
+const livereload = require("gulp-livereload");
+var sourcemaps = require("gulp-sourcemaps");
 
 //create a new  Task  using task function
 //task takes two parameters  name task ,  callback function =>task
@@ -117,7 +119,7 @@ gulp.task("add-Prefix-For-Css", async () => {
 
 /*
 ------------------------------------------------------------------------
-Task 6  Compile All sass files
+Task 7  Compile All sass files
 ------------------------------------------------------------------------
  */
 gulp.task("compile-all-sass", async () => {
@@ -138,17 +140,74 @@ gulp.task("compile-all-sass", async () => {
 			),
 		)
 		.pipe(concat("main.css"))
+		.pipe(livereload())
 		.pipe(gulp.dest("dist/css/"));
 });
 
 /*
 ------------------------------------------------------------------------
-Task 6  Compile Pug  files to Html 
+Task 8  Compile Pug  files to Html 
 ------------------------------------------------------------------------
  */
 gulp.task("compile-pug-file", async () => {
 	gulp
-		.src("./html/index.pug")
+		.src("./pug/index.pug")
+		.pipe(pug({ pretty: false }))
+		.pipe(livereload())
+		.pipe(gulp.dest("dist"));
+});
+
+/*
+------------------------------------------------------------------------
+Task 9  turn on  Live Server than  Compile Pug  files to Html 
+------------------------------------------------------------------------
+ */
+gulp.task("html", async () => {
+	require("./server.js");
+	return gulp
+		.src("./pug/index.pug")
 		.pipe(pug({ pretty: false }))
 		.pipe(gulp.dest("dist"));
+});
+/*
+------------------------------------------------------------------------
+Task 10  compile All Sass Files With SourceMap 
+------------------------------------------------------------------------
+ */
+gulp.task("compile-all-sass-with-source-map", async () => {
+	return gulp
+		.src("sass/*.scss")
+		.pipe(sourcemaps.init())
+		.pipe(sass({ outputStyle: "compressed" }))
+		.pipe(
+			autoprefixer(
+				"last 2 versions",
+				"safari 5",
+				"ie6",
+				"ie7",
+				"ie 8",
+				"ie 9",
+				"opera 12.1",
+				"ios 6",
+				"android 4",
+			),
+		)
+		.pipe(concat("main.css"))
+		.pipe(sourcemaps.write("."))
+		.pipe(livereload())
+		.pipe(gulp.dest("dist/css/"));
+});
+/*
+------------------------------------------------------------------------
+Task 11  Watch ALl task 
+------------------------------------------------------------------------
+ */
+gulp.task("watch", async () => {
+	require("./server.js");
+	livereload.listen();
+	gulp.watch(
+		["sass/*.scss", "sass/**/*.scss"],
+		gulp.series("compile-all-sass-with-source-map"),
+	);
+	gulp.watch("./pug/index.pug", gulp.series("compile-pug-file"));
 });
