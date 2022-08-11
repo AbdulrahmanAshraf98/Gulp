@@ -15,6 +15,7 @@ const pug = require("gulp-pug");
 const livereload = require("gulp-livereload");
 const sourcemaps = require("gulp-sourcemaps");
 const uglify = require("gulp-uglify");
+const notify = require("gulp-notify");
 
 //create a new  Task  using task function
 //task takes two parameters  name task ,  callback function =>task
@@ -196,6 +197,7 @@ gulp.task("compile-all-sass-with-source-map", async () => {
 		.pipe(concat("main.css"))
 		.pipe(sourcemaps.write("."))
 		.pipe(gulp.dest("dist/css/"))
+		.pipe(notify("scss compiled susses"))
 		.pipe(livereload());
 });
 /*
